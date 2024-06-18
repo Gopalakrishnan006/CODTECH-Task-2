@@ -1,0 +1,29 @@
+import socket
+def scan_ports(target_host, start_port, end_port):
+    # Scan ports from start_port to end_port on target_host
+    print(f'Starting port scan on {target_host} from port {start_port} to {end_port}...')
+    
+    try:
+        # Resolve target host
+        target_ip = socket.gethostbyname(target_host)
+    except socket.gaierror:
+        print('Hostname could not be resolved.')
+        return
+    
+    # Scan ports within the specified range
+    for port in range(start_port, end_port + 1):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        socket.setdefaulttimeout(1)  # Timeout for connection attempt
+        
+        # Attempt to connect to target host:port
+        result = sock.connect_ex((target_ip, port))
+        if result == 0:
+            print(f'Port {port}: Open')
+        sock.close()
+
+if __name__ == '__main__':
+    # Example usage: Scan ports 1 to 1000 on localhost
+    target = 'localhost'
+    start_port = 1
+    end_port = 1000
+    scan_ports(target, start_port, end_port)
